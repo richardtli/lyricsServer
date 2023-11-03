@@ -1,7 +1,6 @@
 
 const puppeteer = require("puppeteer-extra");
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
-const {executablePath} = require('puppeteer')
 
 const port = process.env.PORT || 3001;
 
@@ -10,8 +9,7 @@ const express = require('express')
 const app = express()
 const server = app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
-server.keepAliveTimeout = 120 * 1000;
-server.headersTimeout = 120 * 1000;
+
 
 
 puppeteer.use(StealthPlugin())
@@ -24,7 +22,7 @@ app.get('/:link', async(req,res)=> {
 
 
 async function getLyrics(artist, song) {
-  const browser = await puppeteer.launch({headless: 'new', executablePath: executablePath()});
+  const browser = await puppeteer.launch({headless: 'new'});
   const page = await browser.newPage();
   await page.goto(`https://www.azlyrics.com/lyrics/${artist}/${song}.html`);
 

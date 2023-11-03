@@ -1,15 +1,29 @@
 
-const puppeteer = require("puppeteer");
+const puppeteer = require("puppeteer-extra");
+const StealthPlugin = require('puppeteer-extra-plugin-stealth')
+
+const express = require('express')
+const app = express()
+app.listen(3000)
+
+puppeteer.use(StealthPlugin())
+
+app.get('/:link', async(req,res)=> {
+  const array = req.params.link.split('_')
+  const lyrics = await getLyrics(array[0], array[1])
+  res.send(lyrics)
+})
+
 
 async function getLyrics(artist, song) {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({headless: 'new'});
   const page = await browser.newPage();
   await page.goto(`https://www.azlyrics.com/lyrics/${artist}/${song}.html`);
 
   const text = await page.evaluate(() => document.body.innerText);
   let AlmostLyrics = text.slice(
     text.indexOf("on Amazon Music Unlimited (ad)"),
-    text.indexOf(" Submit Corrections")
+    text.indexOf("Submit Corrections")
   );
   let lyrics = AlmostLyrics.slice(AlmostLyrics.indexOf("\n"));
   lyrics = lyrics.slice(lyrics.indexOf("\n\n") + 3);
@@ -20,7 +34,7 @@ async function getLyrics(artist, song) {
   const lyricsArray = lyrics.split("\n");
   lyricsArray.push("Created by RL");
   await browser.close();
-  console.log(lyricsArray);
+  return(lyricsArray);
 }
 
 async function search(query) {
@@ -39,7 +53,5 @@ async function search(query) {
   await browser.close();
   console.log(songs)
 }
-
-getLyrics('taylorswift', 'youbelongwithme')
 
 

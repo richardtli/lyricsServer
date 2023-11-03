@@ -3,11 +3,16 @@ const puppeteer = require("puppeteer-extra");
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 const {executablePath} = require('puppeteer')
 
+const port = process.env.PORT || 3001;
 
 
 const express = require('express')
 const app = express()
-app.listen(3000)
+const server = app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+
+server.keepAliveTimeout = 120 * 1000;
+server.headersTimeout = 120 * 1000;
+
 
 puppeteer.use(StealthPlugin())
 

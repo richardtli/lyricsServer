@@ -1,6 +1,9 @@
 
 const puppeteer = require("puppeteer-extra");
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
+const {executablePath} = require('puppeteer')
+
+
 
 const express = require('express')
 const app = express()
@@ -16,7 +19,7 @@ app.get('/:link', async(req,res)=> {
 
 
 async function getLyrics(artist, song) {
-  const browser = await puppeteer.launch({headless: 'new'});
+  const browser = await puppeteer.launch({headless: 'new', executablePath: executablePath()});
   const page = await browser.newPage();
   await page.goto(`https://www.azlyrics.com/lyrics/${artist}/${song}.html`);
 
